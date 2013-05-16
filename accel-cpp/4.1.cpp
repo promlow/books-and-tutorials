@@ -82,21 +82,21 @@ int main()
     cout << "Enter all your homework grades, "
 	"followed by end-of-file: ";
 
-    // a variable into which to read
-    double x;
     vector<double> homework;
 
-    // invariant:
-    // we have read count grades so far, and
-    // sum is the sum of the first count grades
-    while ( cin >> x )
-	homework.push_back(x);
+    read_hw(cin, homework);
 
-    //write the result
-    streamsize prec = cout.precision();
-    cout << "Your final grade is " << setprecision(3)
-	 << grade(midterm, final, median(homework))
+    // compute and generate the final grade, if possible
+    try {
+	double final_grade = grade(midterm, final, homework);
+	streamsize prec = cout.precision();	
+
+	cout << "Your final grade is " << setprecision(3)
 	 << setprecision(prec) << endl;
-
+    } catch (domain_error) {
+	cout << endl << "You must enter your grades. "
+	    "Please try again." << endl;
+	return 1;
+    }	
     return 0;
 }
