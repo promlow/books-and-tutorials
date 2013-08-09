@@ -12,10 +12,11 @@ let rec lex = parser
     Buffer.add_char buffer c;
     lex_ident buffer stream
 
-  (* number: [0-9]+ *)
-  | [< ' ('0' .. '9') as c); stream >] ->
-    let buffer = Buffer.create l in
-    Buffer.add_char buffer stream
+  (* number: [0-9.]+ *)
+  | [< ' ('0' .. '9' as c); stream >] ->
+      let buffer = Buffer.create 1 in
+      Buffer.add_char buffer c;
+      lex_number buffer stream
 
   (* comment until EOL *)
   | [< ' ('#'); stream >] ->
