@@ -8,7 +8,7 @@ let rec lex = parser
 
   (* identifier [a-zA-Z][a-ZA-Z0-9] *)
   | [< ' ('A' .. 'Z' | 'a' .. 'z' as c); stream >] ->
-    let buffer = Buffer.create l in
+    let buffer = Buffer.create 1 in
     Buffer.add_char buffer c;
     lex_ident buffer stream
 

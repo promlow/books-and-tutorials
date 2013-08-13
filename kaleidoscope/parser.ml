@@ -24,7 +24,7 @@ let rec parse_primary = parser
 
   (* identifier
    *  ::= identifier
-   *  ::= identifier '(' argumentexpr ')' *)
+   *  ::= identifier '(' argumentexpr ')'
    *)
   | [< 'Token.Ident id; stream >] ->
     let rec parse_args accumulator = parser
@@ -80,7 +80,7 @@ and parse_bin_rhs expr_prec lhs stream =
 
       (* merge lhs/rhs *)
       let lhs = Ast.Binary (c, lhs, rhs) in
-      parse_bin_rhs expr_expr lhs stream
+      parse_bin_rhs expr_prec lhs stream
     end
   | _ -> lhs
 
@@ -93,7 +93,7 @@ and parse_expr = parser
 (* prototype
  *   ::= id '(' id* ')' *)
 let parse_prototype =
-  let rec parse_args accululator = parser
+  let rec parse_args accumulator = parser
   | [< 'Token.Ident id; e=parse_args (id::accumulator) >] -> e
   | [< >] -> accumulator
   in
@@ -104,10 +104,10 @@ let parse_prototype =
        args=parse_args [];
        'Token.Kwd ')' ?? "expected ')' in prototype" >] ->
     (* success *)
-    Ast.prototype (id, Array.of_list (List.rev args))
+    Ast.Prototype (id, Array.of_list (List.rev args))
 
   | [< >] ->
-    raise (Stream.error "expected function name in prototype")
+    raise (Stream.Error "expected function name in prototype")
 
 (* definition ::= 'def' prototype expression *)
 let parse_definition = parser
@@ -115,7 +115,7 @@ let parse_definition = parser
     Ast.Function (p, e)
 
 (* toplevelexpr ::= expr *)
-let toplevel_expr = parser
+let parse_toplevel = parser
   | [< e=parse_expr >] ->
     (* make an anonymous proto *)
     Ast.Function (Ast.Prototype ("", [||]), e)
