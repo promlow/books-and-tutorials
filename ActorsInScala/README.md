@@ -25,3 +25,37 @@ The thread-based version's performance was OK up to about 10,000 when the JVM ru
 Check comments within 5.2.scala for an explanation of behavior
 
 
+```Shell
+cd Chapter6
+scala ExceptionHandler.scala
+```
+
+```
+scala> :load exceptionHandlerLoop.scala
+Loading exceptionHandlerLoop.scala...
+import scala.actors.Actor
+import scala.actors.Actor._
+defined module A
+
+scala> A.start()
+res0: scala.actors.Actor = A$@1efbbb1
+
+scala> A ! 'hello
+
+scala> Error!
+
+
+scala> A.getState
+res2: scala.actors.Actor.State.Value = Suspended
+
+scala> A ! 'hi
+your message: 'hi
+
+scala> A ! 'stop
+your message: 'stop
+
+scala> A.getState
+res5: scala.actors.Actor.State.Value = Terminated
+
+scala> 
+```
