@@ -59,3 +59,9 @@ res5: scala.actors.Actor.State.Value = Terminated
 
 scala> 
 ```
+
+```Shell
+scala trapExit.scala
+scala masterSlave.scala
+scala keepAlive.scala
+```
