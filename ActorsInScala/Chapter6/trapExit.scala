@@ -5,7 +5,7 @@ import scala.actors.UncaughtException
 val a = actor {
   react {
     case 'start =>
-      val somethingBadHappened = true
+      val somethingBadHappened = false
       if (somethingBadHappened)
         throw new Exception("Error!")
       println("Nothing bad happened")
