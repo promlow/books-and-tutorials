@@ -15,13 +15,36 @@ class Post(db.Document):
     def __unicode__(self):
         return self.title
 
+    @property
+    def post_type(self):
+        return self.__class__.__name__
+
     meta = {
         'allow_inheritance' : True,
         'indexes'           : ['-created_at', 'slug'],
         'ordering'          : ['-created_at']
     }
 
+
 class Comment(db.EmbeddedDocument):
     created_at = db.DateTimeField(default=datetime.datetime.now, required=True)
     body       = db.StringField(verbose_name="Comment", required=True)
     author     = db.StringField(verbose_name="Name", max_length=255, required=True)
+
+
+class BlogPost(Post):
+    body = db.StringField(required=True)
+
+
+class Video(Post):
+    embed_code = db.StringField(required=True)
+
+
+class Image(Post):
+    image_url = db.StringField(required=True, max_length=255)
+
+
+class Quote(Post):
+    body = db.StringField(required=True)
+    author = db.StringField(verbose_name="Author Name", required=True, max_length=255)
+
