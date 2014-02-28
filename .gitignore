@@ -1,3 +1,7 @@
+#virtual environment
+#cd ve; ln -s ../*.py .
+ve
+
 *.py[cod]
 
 # C extensions
