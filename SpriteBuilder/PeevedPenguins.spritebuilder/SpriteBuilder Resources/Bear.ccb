@@ -186,8 +186,6 @@
 								</array>
 							</dict>
 						</array>
-						<key>selected</key>
-						<true/>
 						<key>seqExpanded</key>
 						<true/>
 					</dict>
@@ -392,13 +390,13 @@
 				<integer>12</integer>
 			</dict>
 			<key>chainedSequenceId</key>
-			<integer>-1</integer>
+			<integer>0</integer>
 			<key>length</key>
 			<real>2</real>
 			<key>name</key>
 			<string>ArmAnimation</string>
 			<key>offset</key>
-			<real>0.0</real>
+			<real>0.019736886024475098</real>
 			<key>position</key>
 			<real>2</real>
 			<key>resolution</key>
