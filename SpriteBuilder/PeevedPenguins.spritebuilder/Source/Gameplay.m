@@ -24,6 +24,9 @@
     
     CCNode *_mouseJointNode;
     CCPhysicsJoint *_mouseJoint;
+    
+    CCNode *_currentPenguin;
+    CCPhysicsJoint *_penguinCatapultJoint;
 
 }
 // is called when CCB file has completed loading
@@ -70,6 +73,23 @@
                                                             anchorA:ccp(0,0) anchorB:ccp(34,138)
                                                          restLength: 0.0 stiffness:3000.0
                                                             damping:150.0];
+        
+        // create the penguin
+        _currentPenguin = [CCBReader load:@"Penguin"];
+        // position it in the scoop. 34,138 is the position in the node space of the catapult arm
+        CGPoint penguinPosition = [_catapultArm convertToWorldSpace:ccp(34, 138)];
+        // transfrom the world position to the node space wherein the penguin will be added
+        _currentPenguin.position = [_physicsNode convertToNodeSpace:penguinPosition];
+        // add it to the physics wold
+        [_physicsNode addChild:_currentPenguin];
+        // don't allow penguin to rotate in the scoop
+        _currentPenguin.physicsBody.allowsRotation = NO;
+        
+        // create a joint to keep the penguin fixed to the scoop until the catapult is released
+        _penguinCatapultJoint = [CCPhysicsJoint connectedPivotJointWithBodyA:_currentPenguin.physicsBody
+                                                                     bodyB:_catapultArm.physicsBody
+                                                                     anchorA:_currentPenguin.anchorPointInPoints];
+        
     }
 }
 
@@ -96,6 +116,16 @@
         // release the joint and let catapult snap back
         [_mouseJoint invalidate];
         _mouseJoint = nil;
+        
+        [_penguinCatapultJoint invalidate];
+        _penguinCatapultJoint = nil;
+        
+        // rotation is OK after launch
+        _currentPenguin.physicsBody.allowsRotation = YES;
+        
+        // follow the flying penguin
+        CCActionFollow *follow = [CCActionFollow actionWithTarget:_currentPenguin worldBoundary:self.boundingBox];
+        [_contentNode runAction:follow];        
     }
 }
 
