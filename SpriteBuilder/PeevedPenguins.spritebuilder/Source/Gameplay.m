@@ -53,7 +53,7 @@
                                                         restLength:60.0 stiffness:500.0 damping:40.0];
     
     _mouseJointNode.physicsBody.collisionMask = @[];
-    
+    _physicsNode.collisionDelegate = self;
 }
 
 // called on every touch in this scene
@@ -91,6 +91,15 @@
                                                                      anchorA:_currentPenguin.anchorPointInPoints];
         
     }
+    else
+    {
+        for (CCNode *n in self.parent.children) {
+            if (CGRectContainsPoint(n.boundingBox, touchLocation)) {
+                CCLOG(@"You just touched %@", n);
+                break;
+            }
+        }
+    }
 }
 
 - (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event
@@ -108,6 +117,21 @@
 - (void)touchCancelled:(UITouch *)touch withEvent:(UIEvent *)event
 {
     [self releaseCatapult];
+}
+
+-(void)ccPhysicsCollisionPostSolve:(CCPhysicsCollisionPair *)pair seal:(CCNode *)nodeA wildcard:(CCNode *)nodeB
+{
+    float energy = [pair totalKineticEnergy];
+    
+    if (energy > 5000.0)
+    {
+        [self sealRemoved:nodeA];
+    }
+}
+
+- (void)sealRemoved:(CCNode*)seal
+{
+    [seal removeFromParent];
 }
 
 - (void)releaseCatapult {
@@ -129,26 +153,26 @@
     }
 }
 
-- (void)launchPenguin
-{
-    // loads the Penguin.ccb we have set up in Spritebuilder
-    CCNode* penguin = [CCBReader load:@"Penguin"];
-    // position the penguin at the bowl of the catapult
-    penguin.position = ccpAdd(_catapultArm.position, ccp(16, 50));
-    
-    // add the penguin to the physicsNode of this scene (because it has physics enabled)
-    [_physicsNode addChild:penguin];
-    
-    // manually create & apply a force to launch the penguin
-    CGPoint launchDirection = ccp(1, 0);
-    CGPoint force = ccpMult(launchDirection, 8000);
-    [penguin.physicsBody applyForce:force];
-    // ensure followed object is in visible area when starting
-    self.position = ccp(0,0);
-    CCActionFollow *follow = [CCActionFollow actionWithTarget:penguin worldBoundary:self.boundingBox];
-    [_contentNode runAction:follow];
-    
-}
+//- (void)launchPenguin
+//{
+//    // loads the Penguin.ccb we have set up in Spritebuilder
+//    CCNode* penguin = [CCBReader load:@"Penguin"];
+//    // position the penguin at the bowl of the catapult
+//    penguin.position = ccpAdd(_catapultArm.position, ccp(16, 50));
+//    
+//    // add the penguin to the physicsNode of this scene (because it has physics enabled)
+//    [_physicsNode addChild:penguin];
+//    
+//    // manually create & apply a force to launch the penguin
+//    CGPoint launchDirection = ccp(1, 0);
+//    CGPoint force = ccpMult(launchDirection, 8000);
+//    [penguin.physicsBody applyForce:force];
+//    // ensure followed object is in visible area when starting
+//    self.position = ccp(0,0);
+//    CCActionFollow *follow = [CCActionFollow actionWithTarget:penguin worldBoundary:self.boundingBox];
+//    [_contentNode runAction:follow];
+//    
+//}
 
 - (void)retry
 {
