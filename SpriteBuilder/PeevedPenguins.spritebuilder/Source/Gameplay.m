@@ -91,15 +91,6 @@
                                                                      anchorA:_currentPenguin.anchorPointInPoints];
         
     }
-    else
-    {
-        for (CCNode *n in self.parent.children) {
-            if (CGRectContainsPoint(n.boundingBox, touchLocation)) {
-                CCLOG(@"You just touched %@", n);
-                break;
-            }
-        }
-    }
 }
 
 - (void)touchMoved:(UITouch *)touch withEvent:(UIEvent *)event
@@ -131,6 +122,11 @@
 
 - (void)sealRemoved:(CCNode*)seal
 {
+    CCParticleSystem *explosion = (CCParticleSystem*) [CCBReader load:@"SealExplosion"];
+    explosion.autoRemoveOnFinish = YES;
+    explosion.position = seal.position;
+    [seal.parent addChild:explosion];
+    
     [seal removeFromParent];
 }
 
