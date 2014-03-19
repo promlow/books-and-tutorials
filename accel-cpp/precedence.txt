@@ -1,0 +1,22 @@
+x.y
+x[y]
+x++
+x--
+++x
+--x
+!x
+x * y
+x / y
+x % y
+x + y
+x - y
+x >> y
+x << y
+x relop y (<, >, <=, >=)
+x == y
+x != y
+x && y
+x || y
+x = y
+x op= y
+x ? y1 : y2
