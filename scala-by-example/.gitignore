@@ -1,1 +1,6 @@
 *.class
+.metadata
+.classpath
+.worksheet
+.project
+.settings
