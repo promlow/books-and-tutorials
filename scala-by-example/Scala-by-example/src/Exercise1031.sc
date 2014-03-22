@@ -66,5 +66,15 @@ object Exercise1031 {
  	//books filter (b => b.title contains "Program")
   programTitle(books)                             //> res4: List[String] = List(Structure and Interpretation of Computer Programs
                                                   //| , Programming in Modula-2, Introduction to Functional Programming)
- 	
+ 	for (book <- books) {
+ 		print(book.title + ": ")
+ 		for (a <- book.authors) print(a + "; ")
+ 		println()
+ 	}                                         //> Structure and Interpretation of Computer Programs: Abelson, Harold; Sussman
+                                                  //| , Gerald J.; 
+                                                  //| Principles of Compiler Design: Aho, Alfred; Ullman, Jeffrey; 
+                                                  //| Programming in Modula-2: Wirth, Niklaus; 
+                                                  //| Introduction to Functional Programming: Bird, Richard; 
+                                                  //| The Java Language Specification: Gosling, James; Joy, Bill; Steele, Guy; Br
+                                                  //| acha, Gilad; 
 }
