@@ -95,6 +95,11 @@
 		</dict>
 		<key>Sprites</key>
 		<dict/>
+		<key>animation</key>
+		<dict>
+			<key>isSmartSpriteSheet</key>
+			<true/>
+		</dict>
 		<key>ccbResources</key>
 		<dict>
 			<key>previewFolderHidden</key>
@@ -179,8 +184,8 @@
 		</dict>
 	</dict>
 	<key>versionStr</key>
-	<string>Version: 1.0.3
-GitHub: 9026dcdd50
+	<string>Version: 1.0.4
+GitHub: 00a3af1cfa
 </string>
 </dict>
 </plist>
