@@ -7,10 +7,16 @@
 //
 
 #import "MainScene.h"
+#import "Obstacle.h"
 
 static const CGFloat firstObstaclePosition = 280.0;
 static const CGFloat distanceBetweenObstacles = 160.0;
-static const CGFloat scrollSpeed = 80.0;
+
+typedef NS_ENUM(NSInteger, DrawingOrder) {
+    DrawingOrderPipes,
+    DrawingOrderGround,
+    DrawingOrderHero
+};
 
 @implementation MainScene
 {
@@ -21,15 +27,30 @@ static const CGFloat scrollSpeed = 80.0;
     NSArray *_grounds;
     NSTimeInterval _sinceTouch;
     NSMutableArray *_obstacles;
+    CCButton *_restartButton;
+    BOOL _gameOver;
+    CGFloat _scrollSpeed;
 }
 
 - (void)didLoadFromCCB
 {
     _grounds = @[_ground1, _ground2];
     _obstacles = [NSMutableArray array];
+    
+    for (CCNode *ground in _grounds)
+    {
+        ground.physicsBody.collisionType = @"level";
+        ground.zOrder = DrawingOrderGround;
+    }
+    _physicsNode.collisionDelegate = self;
+    _hero.physicsBody.collisionType = @"hero";
+    _hero.zOrder = DrawingOrderHero;
+    
     [self spawnNewObstacle];
     [self spawnNewObstacle];
     [self spawnNewObstacle];
+    
+    _scrollSpeed = 80.0;
     
     self.userInteractionEnabled = YES;
 }
@@ -46,8 +67,8 @@ static const CGFloat scrollSpeed = 80.0;
     if ((_sinceTouch > 0.5f)) {
         [_hero.physicsBody applyAngularImpulse:-40000.0 * delta];
     }
-    _hero.position = ccp(_hero.position.x + delta * scrollSpeed, _hero.position.y);
-    _physicsNode.position = ccp(_physicsNode.position.x - (scrollSpeed *delta), _physicsNode.position.y);
+    _hero.position = ccp(_hero.position.x + delta * _scrollSpeed, _hero.position.y);
+    _physicsNode.position = ccp(_physicsNode.position.x - (_scrollSpeed * delta), _physicsNode.position.y);
     for (CCNode *ground in _grounds)
     {
         CGPoint groundWorldPosition = [_physicsNode convertToWorldSpace:ground.position];
@@ -81,9 +102,27 @@ static const CGFloat scrollSpeed = 80.0;
 
 - (void)touchBegan:(UITouch *)touch withEvent:(UIEvent *)event
 {
-    [_hero.physicsBody applyImpulse:ccp(0, 400.0)];
-    [_hero.physicsBody applyAngularImpulse:10000.0];
-    _sinceTouch = 0.0;
+    if(! _gameOver)
+    {
+        [_hero.physicsBody applyImpulse:ccp(0, 400.0)];
+        [_hero.physicsBody applyAngularImpulse:10000.0];
+        _sinceTouch = 0.0;
+
+    }
+}
+
+- (BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero level:(CCNode *)level
+{
+    CCLOG(@"Collision");
+    [self gameOver];
+    return YES;
+}
+
+- (void)restart
+{
+    CCLOG(@"Restarting...");
+    CCScene *scene = [CCBReader loadAsScene:@"MainScene"];
+    [[CCDirector sharedDirector] replaceScene:scene];
 }
 
 - (void)spawnNewObstacle
@@ -94,10 +133,31 @@ static const CGFloat scrollSpeed = 80.0;
         // this is the first obstacle
         previousObstacleXPosition = firstObstaclePosition;
     }
-    CCNode *obstacle = [CCBReader load:@"Obstacle"];
+    Obstacle *obstacle = (Obstacle*)[CCBReader load:@"Obstacle"];
     obstacle.position = ccp(previousObstacleXPosition + distanceBetweenObstacles, 0);
+    [obstacle setupRandomPosition];
     [_physicsNode addChild:obstacle];
     [_obstacles addObject:obstacle];
+}
+
+- (void)gameOver
+{
+    CCLOG(@"Game Over...");
+    if (! _gameOver)
+    {
+        CCLOG(@"Game Over!");
+        _scrollSpeed = 0.0;
+        _gameOver = YES;
+        _restartButton.visible = YES;
+        _hero.rotation = 90.0;
+        _hero.physicsBody.allowsRotation = NO;
+        [_hero stopAllActions];
+        CCActionMoveBy *moveBy = [CCActionMoveBy actionWithDuration:0.2 position:ccp(-2, 2)];
+        CCActionInterval *reverseMovement = [moveBy reverse];
+        CCActionSequence *shakeSequence = [CCActionSequence actionWithArray:@[moveBy, reverseMovement]];
+        CCActionEaseBounce *bounce = [CCActionEaseBounce actionWithAction:shakeSequence];
+        [self runAction:bounce];
+    }
 }
 
 @end
