@@ -30,6 +30,8 @@ typedef NS_ENUM(NSInteger, DrawingOrder) {
     CCButton *_restartButton;
     BOOL _gameOver;
     CGFloat _scrollSpeed;
+    NSInteger _points;
+    CCLabelTTF *_scoreLabel;
 }
 
 - (void)didLoadFromCCB
@@ -115,6 +117,15 @@ typedef NS_ENUM(NSInteger, DrawingOrder) {
 {
     CCLOG(@"Collision");
     [self gameOver];
+    return YES;
+}
+
+-(BOOL)ccPhysicsCollisionBegin:(CCPhysicsCollisionPair *)pair hero:(CCNode *)hero goal:(CCNode *)goal
+{
+    CCLOG(@"Goal!");
+    [goal removeFromParent];
+    _points++;
+    _scoreLabel.string = [NSString stringWithFormat:@"%d", _points];
     return YES;
 }
 
