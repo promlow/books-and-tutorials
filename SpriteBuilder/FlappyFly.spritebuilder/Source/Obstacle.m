@@ -30,6 +30,8 @@ static const CGFloat maximumYPositionTopPipe = maximumYPositionBottomPipe - pipe
     _topPipe.physicsBody.sensor = YES;
     _bottomPipe.physicsBody.collisionType = @"level";
     _bottomPipe.physicsBody.sensor = YES;
+    CCLOG(@"Obstacle _topPipe: %@", _topPipe);
+    CCLOG(@"Obstacle _bottomPipe: %@", _bottomPipe);
 }
 
 - (void)setupRandomPosition

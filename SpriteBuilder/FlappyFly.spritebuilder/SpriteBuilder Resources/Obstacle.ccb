@@ -36,7 +36,7 @@
 				<key>memberVarAssignmentName</key>
 				<string>_topPipe</string>
 				<key>memberVarAssignmentType</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>physicsBody</key>
 				<dict>
 					<key>affectedByGravity</key>
@@ -161,7 +161,7 @@
 				<key>memberVarAssignmentName</key>
 				<string>_bottomPipe</string>
 				<key>memberVarAssignmentType</key>
-				<integer>2</integer>
+				<integer>1</integer>
 				<key>physicsBody</key>
 				<dict>
 					<key>affectedByGravity</key>
